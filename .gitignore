@@ -1,4 +1,5 @@
 .DS_Store
+app/settings/config.php
 mvc/models/*
 mvc/views/*
 mvc/controllers/*
