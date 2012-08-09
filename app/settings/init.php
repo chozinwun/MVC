@@ -1,7 +1,7 @@
 <?php
 
 	// Include application classes
-	include __SITE_PATH . '/app/classes/' . 'controller_base.class.php';
+	include __SITE_PATH . '/app/classes/' . 'controller.class.php';
 	include __SITE_PATH . '/app/classes/' . 'registry.class.php';
 	include __SITE_PATH . '/app/classes/' . 'router.class.php';
 	include __SITE_PATH . '/app/classes/' . 'template.class.php';
