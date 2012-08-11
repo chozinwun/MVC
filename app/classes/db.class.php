@@ -1,9 +1,6 @@
 <?php
-
 abstract class Db {
-	
-	protected $registry;
-	
+
 	private $db_type = NULL;
 	private $db_host = NULL;
 	private $db_name = NULL;
