@@ -6,6 +6,7 @@
 	include __SITE_PATH . '/app/classes/' . 'router.class.php';
 	include __SITE_PATH . '/app/classes/' . 'template.class.php';
 	include __SITE_PATH . '/app/classes/' . 'db.class.php';
+	include __SITE_PATH . '/app/classes/' . 'api.class.php';
 	
 	// Auto load model classes
 	function __autoload($class_name) {
@@ -21,5 +22,5 @@
 	
 	// create the registry object
 	$registry = new registry;	
-
+	
 ?>

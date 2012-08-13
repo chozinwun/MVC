@@ -1,136 +1,102 @@
 <?php
 
 class router {
- /*
- * @the registry
- */
- private $registry;
 
- /*
- * @the controller path
- */
- private $path;
-
- private $args = array();
-
- public $file;
-
- public $controller;
-
- public $action; 
-
- function __construct($registry) {
-        $this->registry = $registry;
- }
-
- /**
- *
- * @set controller directory path
- *
- * @param string $path
- *
- * @return void
- *
- */
- function setPath($path) {
-
-	/*** check if path i sa directory ***/
-	if (is_dir($path) == false)
-	{
-		throw new Exception ('Invalid controller path: `' . $path . '`');
-	}
-	/*** set the path ***/
- 	$this->path = $path;
-}
-
-
- /**
- *
- * @load the controller
- *
- * @access public
- *
- * @return void
- *
- */
- public function loader()
- {
-	/*** check the route ***/
-	$this->getController();
-
-	/*** if the file is not there diaf ***/
-	if (is_readable($this->file) == false)
-	{
-		$this->file = $this->path.'/error404.php';
-                $this->controller = 'error404';
+	private $registry;
+	private $path;
+	private $args = array();
+	public $file;
+	public $controller;
+	public $method; 
+	public $uri;
+	
+	function __construct($registry) {
+		$this->registry = $registry;
+		$this->uri = self::setURI();
 	}
 
-	/*** include the controller ***/
-	include $this->file;
+	// Set controller directory path
+	function setPath($path) {
 
-	/*** a new controller class instance ***/
-	$class = $this->controller . 'Controller';
-	$controller = new $class($this->registry);
-
-	/*** check if the action is callable ***/
-	if (is_callable(array($controller, $this->action)) == false)
-	{
-		$action = 'index';
-	}
-	else
-	{
-		$action = $this->action;
-	}
-	/*** run the action ***/
-	$controller->$action();
- }
-
-
- /**
- *
- * @get the controller
- *
- * @access private
- *
- * @return void
- *
- */
-private function getController() {
-
-	/*** get the route from the url ***/
-	$route = (empty($_GET['rt'])) ? '' : $_GET['rt'];
-
-	if (empty($route))
-	{
-		$route = 'index';
-	}
-	else
-	{
-		/*** get the parts of the route ***/
-		$parts = explode('/', $route);
-		$this->controller = $parts[0];
-		$this->registry->parts = $parts;
-		
-		if(isset( $parts[1]))
-		{
-			$this->action = $parts[1];
+		// Check if path is a directory
+		if (is_dir($path) == false) {
+			throw new Exception ('Invalid controller path: `' . $path . '`');
 		}
+		// set the path
+	 	$this->path = $path;
 	}
 
-	if (empty($this->controller))
-	{
-		$this->controller = 'index';
+	// Create the uri array
+	public function setURI() {
+		
+		// Get the route from the url 
+		$route = (empty($_GET['rt'])) ? '' : $_GET['rt'];
+		
+		// get the parts of the route
+		$uri_parts = explode('/', $route);
+		
+		return $uri_parts;
+	}
+	
+	// Load the controller
+	public function load() {
+		
+		// check if api was called
+		if($this->uri[0] == 'api') {
+		
+			$this->registry->api->load();
+			
+		} else {
+
+			// set the route's controller and assign to $this->file
+			$this->getController();
+			
+			// If the file is not there load 404
+			if (is_readable($this->file) == false) {
+				$this->file = $this->path.'/error404.php';
+				$this->controller = 'error404';
+			}
+			
+			// Include the controller
+			include $this->file;
+			
+			// a new controller class instance ***/
+			$class = $this->controller . 'Controller';
+			$controller = new $class($this->registry);
+			
+			/*** check if the action is callable ***/
+			if (is_callable(array($controller, $this->method)) == false) {
+				$action = 'index';
+			
+			} else {
+				$action = $this->method;
+			}
+			
+			// run the action
+			$controller->$action();
+		} // end else
+		
 	}
 
-	/*** Get action ***/
-	if (empty($this->action))
-	{
-		$this->action = 'index';
+ 	// get the controller
+	private function getController() {
+		
+		if (empty($this->uri[0])) {
+			$this->controller = 'index';
+		} else {
+			$this->controller = $this->uri[0];
+		}
+	
+		// Get the method
+		if (empty($this->uri[1])) {
+			$this->method = 'index';
+		} else {
+			$this->method = $this->uri[1];
+		}
+		
+		// set the file path of the controller
+		$this->file = $this->path .'/'. $this->controller . '.php';
 	}
-
-	/*** set the file path ***/
-	$this->file = $this->path .'/'. $this->controller . '.php';
-}
 
 
 }

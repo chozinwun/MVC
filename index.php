@@ -6,26 +6,24 @@
 		Company: Marco Productions
 	*/
 	
-	/*** define the site path ***/
+	// Define the site path
 	$site_path = realpath(dirname(__FILE__));
 	define ('__SITE_PATH', $site_path);
 	
-	/*** include the init.php file ***/
+	// Load app configurations
 	include 'app/settings/init.php';
 	include 'app/settings/config.php';
 	
-	/*** load the router ***/
+	// Initialize the app classes
 	$registry->router = new router($registry);
-	
-	/*** set the controller path ***/
 	$registry->router->setPath (__SITE_PATH . '/mvc/controllers');
-	
-	/*** load up the template ***/
 	$registry->template = new template($registry);
+	$registry->api = new api($registry);
 	
+	// Start the session
 	session_start();
 	
-	/*** load the controller ***/
-	$registry->router->loader();
+	// load the proper controller
+	$registry->router->load();
 
 ?>
