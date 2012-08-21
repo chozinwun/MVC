@@ -16,15 +16,7 @@ class api {
 		$this->version = $version;
 	}
 	
-	public function load() {
-		
-		// Set the api version to be used
-		if(isset($this->registry->router->uri[1])) {
-			self::setVersion($this->registry->router->uri[1]);
-		} else {
-			echo "version must be set";
-			exit;
-		}
+	public function setResponseType() {
 		
 		// Define the response type
 		$uri_end = end($this->registry->router->uri);
@@ -40,6 +32,20 @@ class api {
 			echo "no response type defined";
 			exit;
 		}
+	}
+	
+	public function load() {
+		
+		// Set the api version to be used
+		if(isset($this->registry->router->uri[1])) {
+			self::setVersion($this->registry->router->uri[1]);
+		} else {
+			echo "version must be set";
+			exit;
+		}
+		
+		// Define 
+		self::setResponseType();
 		
 		// define which api is going to be used
 		if(isset($this->registry->router->uri[2])) {
@@ -60,6 +66,9 @@ class api {
 				// a new controller class instance
 				$class = $this->api . 'Api';
 				$api = new $class($this->registry);
+				
+				// Assign response type to this api instance 
+				$api->response_type = $this->response_type;
 				
 				// Define the method to be called. If not defined, search for the main function
 				if(isset($this->registry->router->uri[3])){
@@ -87,6 +96,19 @@ class api {
 			echo "improper call. please define the object";
 		}
 	}
+	
+	public function returnData($result) {
+		
+		if($this->response_type == 'json') {
+			header('Content-type: application/json');
+			echo json_encode($result);
+		} elseif ($this->response_type == 'xml') {
+			echo "xml is currently unavailable";
+		} else {
+			echo "your reponse type is unsupported";
+		}
+	}
+	
 	
 }
 ?>

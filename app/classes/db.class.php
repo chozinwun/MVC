@@ -44,12 +44,20 @@ abstract class Db {
 		return $result;
 	}
 	
-	public function show_json($array) {
-		return json_encode($array);
-	}
-	
-	public function show_xml($array) {
-		return true;
+	public function buildSQL($sql,$params){
+		
+		// Add any available parameters
+		if($params) {
+			$sql .= " WHERE ";
+			
+			foreach($params as $key => $value) {
+				$sql .= $key . "=:" . $key;
+			}
+				
+		}
+		
+		return $sql;
+		
 	}
 	
 }

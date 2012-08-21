@@ -35,6 +35,9 @@ class router {
 		// get the parts of the route
 		$uri_parts = explode('/', $route);
 		
+		// remove the route parameter so that it won't interfere with other classes
+		unset($_GET['rt']);
+		
 		return $uri_parts;
 	}
 	

@@ -3,3 +3,8 @@ app/settings/config.php
 mvc/models/*
 mvc/views/*
 mvc/controllers/*
+mvc/api/*
+media/*
+app/crons/*
+app/resapp_dev
+tmp
